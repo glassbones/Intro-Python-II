@@ -1,6 +1,9 @@
-from room import Room
-from player import Player
+from .player import Player
+from .room import Room
 import os
+import sys
+
+clear = lambda: os.system('cls')
 
 # Declare all the rooms
 
@@ -48,19 +51,7 @@ room['narrow'].n_journey = 'Heading towards the strange scent you spot a bright 
 room['treasure'].s_to = room['narrow']
 room['treasure'].s_journey = 'You travel south and arrive at your destination.'
 
-
-#
-# Main
-#
-clear = lambda: os.system('cls')
-
-
-print(room['outside'].name)
-
-
-def gap():
-    print()
-    print()
+player = Player('defaultName', room['outside'])
 
 def createPlayer(player):
     clear()
@@ -72,102 +63,7 @@ def introText(player):
     clear()
     print(f'{player.name}, you have awoken on the edge of a towering cliffside.\nYou aren\'t quite sure how you got here and your memory is quite hazy.\nRunning your fingers across the back of your throbbing skull you are greeted with a stinging pain and the discovery of an open wound. ')
 
-def describeText(player):
-    clear()
-    print("You look around...")
-    print(player.locat.desc)
-    gap()
-    print('Actions:')
-    ventureText(player)
-
-def ventureText(player):
-    player.locat.actions = []
-
-    for idx, val in enumerate(player.locat.getActions(), start=1):
-        print(f"[{idx}]: {val}")
-
-    getPlayerInput(player)
-
-def exploreText(player):
-    
-    print('[1] Look around.')
-    print()
-    playerCmd = input('Select an Action:')
-
-    if playerCmd == 'QUIT':
-        gameOver = True
-        print('oof... Game Over...')
-    if playerCmd == '1':
-        player.locat.explored == True
-        describeText(player)
-        
-
-def getPlayerInput(player):
-    currentLocat = player.locat
-    print()
-    playerCmd = input('Select an Action:')
-
-    for idx, val in enumerate(currentLocat.getActions(), start=1):
-        if playerCmd == str(idx):
-            if "North" in str(val):
-                player.locat = currentLocat.n_to
-                clear()
-                print(currentLocat.n_journey)
-            if "East" in str(val):
-                player.locat = currentLocat.e_to
-                clear()
-                print(currentLocat.e_journey)
-            if "South" in str(val):
-                player.locat = currentLocat.s_to
-                clear()
-                print(currentLocat.s_journey)
-            if "West" in str(val):
-                player.locat = currentLocat.w_to
-                clear()
-                print(currentLocat.w_journey)
-
-####################################################################################################################
-####################################################################################################################
-####################################################################################################################               
-####################################################################################################################
-####################################################################################################################
-####################################################################################################################
-def play():
-    #init values
-    gameOver = False
-    player = Player('defaultName', room['outside'])
-    
-    #create player
+def run():
     createPlayer(player)
-
-    #start adventure
     introText(player)
-
-    #game loop
-    while not gameOver:
-
-        gap()
-        print('Actions:')
-
-        if player.locat.explored:
-            ventureText(player)
-        else:
-            exploreText(player)
-        
-
-
-
-
-play()
-# Make a new player object that is currently in the 'outside' room.
-
-# Write a loop that:
-#
-# * Prints the current room name
-# * Prints the current description (the textwrap module might be useful here).
-# * Waits for user input and decides what to do.
-#
-# If the user enters a cardinal direction, attempt to move to the room there.
-# Print an error message if the movement isn't allowed.
-#
-# If the user enters "q", quit the game.
+    return player
